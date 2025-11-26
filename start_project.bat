@@ -1,2 +1,3 @@
-cd backend
-npm run dev
+@echo off
+
+start cmd /k "cd backend && npm run dev"
