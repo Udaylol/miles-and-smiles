@@ -10,7 +10,7 @@ const formatUser = (user) => {
   };
 };
 
-export const setAuthCookie = (res, token) => {
+const setAuthCookie = (res, token) => {
   res.cookie("token", token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
@@ -66,22 +66,22 @@ class AuthController {
           .json({ message: "Email and password required." });
       }
 
-      const user = await User.findOne({ email });
-      if (!user) {
+      const existingUser = await User.findOne({ email });
+      if (!existingUser) {
         return res.status(400).json({ message: "Invalid email or password." });
       }
 
-      const isMatch = await comparePassword(password, user.password);
+      const isMatch = await comparePassword(password, existingUser.password);
       if (!isMatch) {
         return res.status(400).json({ message: "Invalid email or password." });
       }
 
-      const token = generateToken(user._id);
+      const token = generateToken(existingUser._id);
       setAuthCookie(res, token);
 
       return res.status(200).json({
         message: "Signin successful.",
-        user: formatUser(user),
+        user: formatUser(existingUser),
         token,
       });
     } catch (e) {
