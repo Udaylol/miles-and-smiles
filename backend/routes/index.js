@@ -1,9 +1,9 @@
-import AuthRoutes from "./authRoutes.js";
-import UserRoutes from "./userRoutes.js";
+import authRoutes from "./authRoutes.js";
+import userRoutes from "./userRoutes.js";
 
 const Routes = {
-  auth: AuthRoutes,
-  user: UserRoutes,
+  auth: authRoutes,
+  user: userRoutes,
 };
 
 export default Routes;

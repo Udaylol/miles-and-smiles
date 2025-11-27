@@ -9,6 +9,11 @@ const gameSchema = new mongoose.Schema(
       trim: true,
     },
 
+    minPlayers: {
+      type: Number,
+      required: true,
+    },
+
     maxPlayers: {
       type: Number,
       required: true,
