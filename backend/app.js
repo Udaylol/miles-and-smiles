@@ -25,4 +25,10 @@ app.get("/health", (req, res) => {
 app.use("/api/auth", Routes.auth);
 app.use("/api/user", Routes.user);
 
+app.use((err, req, res, next) => {
+  console.error("GLOBAL ERROR:", err);
+  res.status(500).json({ error: "Internal Server Error" });
+});
+
+
 export default app;
