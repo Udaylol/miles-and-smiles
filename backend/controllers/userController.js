@@ -61,6 +61,13 @@ class UserController {
   static async updateCredentials(req, res) {
     try {
       const { email, username } = req.body || {};
+
+      if (!email && !username) {
+        return res.status(200).json({
+          message: "No changes provided. User is up to date.",
+        });
+      }
+
       const userId = req.user._id;
 
       if (email) {
