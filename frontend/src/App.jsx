@@ -1,5 +1,11 @@
+import Test from "./Test";
+
 function App() {
-  return <></>;
+  return (
+    <>
+      <Test />
+    </>
+  );
 }
 
 export default App;

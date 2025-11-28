@@ -2,10 +2,7 @@ import User from "../models/User.js";
 
 class UserController {
   async getMe(req, res) {
-    return res.json({
-      message: "Success",
-      user: req.user,
-    });
+    return res.json(req.user);
   }
 
   async updateUser(req, res) {
