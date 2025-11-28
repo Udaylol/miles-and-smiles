@@ -2,7 +2,7 @@ import User from "../models/User.js";
 
 class UserController {
   async getMe(req, res) {
-    return res.json(req.user);
+    return res.json({ message: "User fetched successfully", user: req.user });
   }
 
   async updateUser(req, res) {

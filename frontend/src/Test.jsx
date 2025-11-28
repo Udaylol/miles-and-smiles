@@ -45,13 +45,13 @@ function Test() {
         method="GET"
         label="Get Me"
         onSuccess={(data) => {
-          setGetMeResponse(data);
-          setMe(data);
+          setGetMeResponse(data.message);
+          setMe(data.user);
         }}
         onError={(err) => setSignupError(err)}
       />
 
-      <h3 style={{ marginTop: "30px" }}>Signup Response:</h3>
+      <h3>Signup Response:</h3>
       <pre style={{ background: "#1a550cff", padding: "10px" }}>
         {signupResponse ? JSON.stringify(signupResponse, null, 2) : "None yet"}
       </pre>
