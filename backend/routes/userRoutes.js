@@ -11,8 +11,6 @@ console.log("updateCredentials =", UserController.updateCredentials);
 
 router.get("/me", auth, UserController.getMe);
 
-router.get("/friends", auth, UserController.getFriends);
-
 router.patch(
   "/me",
   auth,
