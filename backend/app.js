@@ -24,6 +24,7 @@ app.get("/health", (req, res) => {
 // Routes
 app.use("/api/auth", Routes.auth);
 app.use("/api/user", Routes.user);
+app.use("/api/friends", Routes.friend);
 
 app.use((err, req, res, next) => {
   console.error("GLOBAL ERROR:", err);

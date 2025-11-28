@@ -1,11 +1,14 @@
 import User from "../models/User.js";
 
 class UserController {
-  async getMe(req, res) {
-    return res.json({ message: "User fetched successfully", user: req.user });
+  static async getMe(req, res) {
+    return res.json({
+      message: "User fetched successfully",
+      user: req.user,
+    });
   }
 
-  async updateUser(req, res) {
+  static async updateUser(req, res) {
     try {
       const updates = req.body || {};
 
@@ -31,7 +34,7 @@ class UserController {
     }
   }
 
-  async getFriends(req, res) {
+  static async getFriends(req, res) {
     try {
       const userId = req.user._id;
 
@@ -55,7 +58,7 @@ class UserController {
     }
   }
 
-  async updateCredentials(req, res) {
+  static async updateCredentials(req, res) {
     try {
       const { email, username } = req.body || {};
       const userId = req.user._id;
@@ -78,12 +81,12 @@ class UserController {
         { new: true }
       ).select("-password");
 
-      res.json(updated);
+      return res.json(updated);
     } catch (err) {
       console.error(err);
-      res.status(500).json({ message: "Server error" });
+      return res.status(500).json({ message: "Server error" });
     }
   }
 }
 
-export default new UserController();
+export default UserController;

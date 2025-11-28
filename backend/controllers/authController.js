@@ -20,7 +20,7 @@ const setAuthCookie = (res, token) => {
 };
 
 class AuthController {
-  async signup(req, res) {
+  static async signup(req, res) {
     try {
       const { email, password } = req.body || {};
 
@@ -56,7 +56,7 @@ class AuthController {
     }
   }
 
-  async signin(req, res) {
+  static async signin(req, res) {
     try {
       const { email, password } = req.body || {};
 
@@ -90,10 +90,10 @@ class AuthController {
     }
   }
 
-  async signout(req, res) {
+  static async signout(req, res) {
     res.cookie("token", "", { maxAge: 0 });
     return res.status(200).json({ message: "Signed out successfully." });
   }
 }
 
-export default new AuthController();
+export default AuthController;
