@@ -37,10 +37,12 @@ class AuthController {
 
       const hashedPassword = await hashPassword(password);
 
-      const user = await User.create({
+      const user = new User({
         email,
         password: hashedPassword,
       });
+      user.username = user._id.toString();
+      await user.save();
 
       const token = generateToken(user._id);
       setAuthCookie(res, token);

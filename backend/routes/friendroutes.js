@@ -4,14 +4,13 @@ import FriendController from "../controllers/friendController.js";
 
 const router = express.Router();
 
-router.get("/", auth, FriendController.getFriends)
-router.get("/requests", auth, FriendController.getFriendRequests)
+router.get("/", auth, FriendController.getFriends);
+router.get("/requests", auth, FriendController.getFriendRequests);
 
-router.post("/request/:userId", auth, FriendController.send)
-router.post("/accept/:userId", auth, FriendController.accept)
-router.post("/reject/:userId", auth, FriendController.reject)
-router.post("/cancel/:userId", auth, FriendController.cancel)
+router.post("/request/:id", auth, FriendController.sendFriendRequest);
+router.post("/request/:id/accept", auth, FriendController.acceptFriendRequest);
 
-router.delete("/:userId", auth, FriendController.remove)
+router.delete("/:id", auth, FriendController.deleteFriend);
+router.delete("/request/:id", auth, FriendController.deleteFriendRequest);
 
 export default router;

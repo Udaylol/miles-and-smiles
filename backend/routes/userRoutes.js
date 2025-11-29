@@ -7,8 +7,6 @@ import { updateCredentialsSchema } from "../validators/credentialsSchema.js";
 
 const router = express.Router();
 
-console.log("updateCredentials =", UserController.updateCredentials);
-
 router.get("/me", auth, UserController.getMe);
 
 router.patch(

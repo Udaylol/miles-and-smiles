@@ -31,10 +31,10 @@ class FriendController {
     }
   }
 
-  static async send(req, res) {
+  static async sendFriendRequest(req, res) {
     try {
       const senderId = req.user.id;
-      const receiverId = req.params.userId;
+      const receiverId = req.params.id;
 
       if (senderId === receiverId)
         return res.status(400).json({ message: "You cannot add yourself" });
@@ -46,7 +46,7 @@ class FriendController {
         return res.status(400).json({ message: "Already friends" });
 
       if (sender.incomingFriendRequests.includes(receiverId))
-        return FriendController.accept(req, res);
+        return FriendController.acceptFriendRequest(req, res);
 
       if (sender.outgoingFriendRequests.includes(receiverId))
         return res.status(400).json({ message: "Request already sent" });
@@ -64,10 +64,10 @@ class FriendController {
     }
   }
 
-  static async accept(req, res) {
+  static async acceptFriendRequest(req, res) {
     try {
       const receiverId = req.user.id;
-      const senderId = req.params.userId;
+      const senderId = req.params.id;
 
       const receiver = await User.findById(receiverId);
       const sender = await User.findById(senderId);
@@ -75,10 +75,13 @@ class FriendController {
       if (!receiver.incomingFriendRequests.includes(senderId))
         return res.status(400).json({ message: "No request from this user" });
 
-      receiver.incomingFriendRequests =
-        receiver.incomingFriendRequests.filter(id => id.toString() !== senderId);
-      sender.outgoingFriendRequests =
-        sender.outgoingFriendRequests.filter(id => id.toString() !== receiverId);
+      receiver.incomingFriendRequests = receiver.incomingFriendRequests.filter(
+        (id) => id.toString() !== senderId
+      );
+
+      sender.outgoingFriendRequests = sender.outgoingFriendRequests.filter(
+        (id) => id.toString() !== receiverId
+      );
 
       receiver.friends.push(senderId);
       sender.friends.push(receiverId);
@@ -93,69 +96,53 @@ class FriendController {
     }
   }
 
-  static async reject(req, res) {
+  static async deleteFriendRequest(req, res) {
     try {
-      const receiverId = req.user.id;
-      const senderId = req.params.userId;
+      const uid1 = req.user.id;
+      const uid2 = req.params.id;
 
-      const receiver = await User.findById(receiverId);
-      const sender = await User.findById(senderId);
+      const user1 = await User.findById(uid1);
+      const user2 = await User.findById(uid2);
 
-      receiver.incomingFriendRequests =
-        receiver.incomingFriendRequests.filter(id => id.toString() !== senderId);
-      sender.outgoingFriendRequests =
-        sender.outgoingFriendRequests.filter(id => id.toString() !== receiverId);
+      user1.incomingFriendRequests = user1.incomingFriendRequests.filter(
+        (id) => id.toString() !== uid2
+      );
+      user1.outgoingFriendRequests = user1.outgoingFriendRequests.filter(
+        (id) => id.toString() !== uid2
+      );
+      user2.incomingFriendRequests = user2.incomingFriendRequests.filter(
+        (id) => id.toString() !== uid1
+      );
+      user2.outgoingFriendRequests = user2.outgoingFriendRequests.filter(
+        (id) => id.toString() !== uid1
+      );
 
-      await receiver.save();
-      await sender.save();
+      await user1.save();
+      await user2.save();
 
-      res.json({ message: "Friend request rejected" });
+      res.json({ message: "Friend request removed" });
     } catch (err) {
-      console.error("rejectFriendRequest error:", err);
+      console.error("deleteFriendRequest error:", err);
       res.status(500).json({ message: "Server error" });
     }
   }
 
-  static async cancel(req, res) {
+  static async deleteFriend(req, res) {
     try {
-      const senderId = req.user.id;
-      const receiverId = req.params.userId;
+      const uid1 = req.user.id;
+      const uid2 = req.params.id;
 
-      const sender = await User.findById(senderId);
-      const receiver = await User.findById(receiverId);
+      const user1 = await User.findById(uid1);
+      const user2 = await User.findById(uid2);
 
-      sender.outgoingFriendRequests =
-        sender.outgoingFriendRequests.filter(id => id.toString() !== receiverId);
-      receiver.incomingFriendRequests =
-        receiver.incomingFriendRequests.filter(id => id.toString() !== senderId);
-
-      await sender.save();
-      await receiver.save();
-
-      res.json({ message: "Friend request cancelled" });
-    } catch (err) {
-      console.error("cancelFriendRequest error:", err);
-      res.status(500).json({ message: "Server error" });
-    }
-  }
-
-  static async remove(req, res) {
-    try {
-      const userId = req.user.id;
-      const friendId = req.params.userId;
-
-      const user = await User.findById(userId);
-      const friend = await User.findById(friendId);
-
-      user.friends = user.friends.filter(id => id.toString() !== friendId);
-      friend.friends = friend.friends.filter(id => id.toString() !== userId);
-
-      await user.save();
-      await friend.save();
+      user1.friends = user1.friends.filter((id) => id.toString() !== uid2);
+      user2.friends = user2.friends.filter((id) => id.toString() !== uid1);
+      await user1.save();
+      await user2.save();
 
       res.json({ message: "Friend removed" });
     } catch (err) {
-      console.error("removeFriend error:", err);
+      console.error("deleteFriend error:", err);
       res.status(500).json({ message: "Server error" });
     }
   }
