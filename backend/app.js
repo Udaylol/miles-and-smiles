@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import Routes from "./routes/index.js";
+import multer from "multer";
 
 const app = express();
 
@@ -28,11 +29,30 @@ app.use("/api/friends", Routes.friend);
 
 // Error Handling Middlewares
 app.use((err, req, res, next) => {
-  if (err.code === "LIMIT_UNEXPECTED_FILE") {
-    return res
-      .status(400)
-      .json({ message: "Only one file can be uploaded for profile picture." });
+  if (err instanceof multer.MulterError) {
+    if (err.code === "LIMIT_FILE_COUNT") {
+      return res.status(400).json({
+        success: false,
+        message: "Only one file can be uploaded",
+        data: null,
+      });
+    }
+
+    if (err.code === "LIMIT_UNEXPECTED_FILE") {
+      return res.status(400).json({
+        success: false,
+        message: "Unexpected file field",
+        data: null,
+      });
+    }
+
+    return res.status(400).json({
+      success: false,
+      message: "File upload error",
+      data: null,
+    });
   }
+
   next(err);
 });
 

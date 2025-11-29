@@ -5,10 +5,13 @@ import { upload } from "../middlewares/upload.js";
 import { validate } from "../middlewares/validate.js";
 import { updateUserSchema } from "../validators/userSchema.js";
 import { updateCredentialsSchema } from "../validators/credentialsSchema.js";
+import FavouriteController from "../controllers/favouriteController.js";
 
 const router = express.Router();
 
 router.get("/me", auth, UserController.getMe);
+
+router.get("/:id", auth, UserController.getUserById);
 
 router.patch(
   "/me",
@@ -27,6 +30,16 @@ router.patch(
   auth,
   upload.single("pfp"),
   UserController.updateProfilePicture
+);
+
+router.delete("/me/profile-picture", auth, UserController.deleteProfilePicture);
+
+router.post("/me/favourites/:gameId", auth, FavouriteController.addFavourite);
+
+router.delete(
+  "/me/favourites/:gameId",
+  auth,
+  FavouriteController.deleteFavourite
 );
 
 export default router;

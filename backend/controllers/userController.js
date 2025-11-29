@@ -3,6 +3,33 @@ import cloudinary from "../config/cloudinary.js";
 import { isSameObject } from "../utils/compare.js";
 
 class UserController {
+  // --------------------- GET USER ---------------------
+  static async getUserById(req, res) {
+    try {
+      const userId = req.params.id;
+      const user = await User.findById(userId).select("-password");
+      if (!user) {
+        return res.status(404).json({
+          success: false,
+          message: "User not found",
+          data: null,
+        });
+      }
+      return res.status(200).json({
+        success: true,
+        message: "User fetched successfully",
+        data: user,
+      });
+    } catch (err) {
+      console.error(err);
+      return res.status(500).json({
+        success: false,
+        message: "Server error",
+        data: null,
+      });
+    }
+  }
+
   // --------------------- GET ME ---------------------
   static async getMe(req, res) {
     return res.status(200).json({
@@ -28,7 +55,19 @@ class UserController {
       }
 
       // Forbidden fields
-      const forbidden = ["_id", "email", "username", "password", "profilePicture"];
+      const forbidden = [
+        "_id",
+        "email",
+        "username",
+        "password",
+        "profilePicture",
+        "profilePicturePublicId",
+        "favourites",
+        "friends",
+        "incomingFriendRequests",
+        "outgoingFriendRequests",
+      ];
+
       for (const key of Object.keys(updates)) {
         if (forbidden.includes(key)) delete updates[key];
       }
@@ -132,11 +171,9 @@ class UserController {
       }
 
       // Perform update
-      const updated = await User.findByIdAndUpdate(
-        userId,
-        updates,
-        { new: true }
-      ).select("-password");
+      const updated = await User.findByIdAndUpdate(userId, updates, {
+        new: true,
+      }).select("-password");
 
       return res.status(200).json({
         success: true,
@@ -197,6 +234,36 @@ class UserController {
       return res.status(500).json({
         success: false,
         message: "Failed to update profile picture",
+        data: null,
+      });
+    }
+  }
+
+  // --------------------- DELETE PROFILE PICTURE ---------------------
+  static async deleteProfilePicture(req, res) {
+    try {
+      const userId = req.user._id;
+      const user = await User.findById(userId);
+      if (!user) {
+        return res.status(404).json({
+          success: false,
+          message: "User not found",
+          data: null,
+        });
+      }
+      user.profilePicture = "/guest.png";
+      user.profilePicturePublicId = null;
+      await user.save();
+      return res.status(200).json({
+        success: true,
+        message: "Profile picture removed",
+        data: null,
+      });
+    } catch (err) {
+      console.error(err);
+      return res.status(500).json({
+        success: false,
+        message: "Failed to remove profile picture",
         data: null,
       });
     }
