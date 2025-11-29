@@ -9,7 +9,11 @@ export const auth = async (req, res, next) => {
       req.cookies?.token || req.headers.authorization?.split(" ")[1];
 
     if (!token) {
-      return res.status(401).json({ message: "Not authenticated." });
+      return res.status(401).json({
+        success: false,
+        message: "Not authenticated.",
+        data: null,
+      });
     }
 
     const decoded = jwt.verify(token, JWT_SECRET);
@@ -17,12 +21,21 @@ export const auth = async (req, res, next) => {
     req.user = await User.findById(decoded._id).select("-password");
 
     if (!req.user) {
-      return res.status(401).json({ message: "User no longer exists." });
+      return res.status(401).json({
+        success: false,
+        message: "User no longer exists.",
+        data: null,
+      });
     }
 
     next();
   } catch (err) {
     console.error("Auth error:", err);
-    return res.status(401).json({ message: "Invalid or expired token." });
+
+    return res.status(401).json({
+      success: false,
+      message: "Invalid or expired token.",
+      data: null,
+    });
   }
 };
