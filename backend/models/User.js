@@ -1,4 +1,8 @@
 import mongoose from "mongoose";
+import { customAlphabet, urlAlphabet } from "nanoid";
+
+const alphabet = urlAlphabet.replace(/[-_]/g, "");
+const generateUsername = customAlphabet(alphabet, 6);
 
 const userSchema = new mongoose.Schema(
   {
@@ -31,33 +35,35 @@ const userSchema = new mongoose.Schema(
       default: null,
     },
 
-    favourites: {
-      type: [mongoose.Schema.Types.ObjectId],
-      ref: "Game",
-      default: [],
-    },
+    favourites: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Game",
+      },
+    ],
 
-    friends: {
-      type: [mongoose.Schema.Types.ObjectId],
-      ref: "User",
-      default: [],
-    },
+    friends: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
 
-    incomingFriendRequests: {
-      type: [mongoose.Schema.Types.ObjectId],
-      ref: "User",
-      default: [],
-    },
+    incomingFriendRequests: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
 
-    outgoingFriendRequests: {
-      type: [mongoose.Schema.Types.ObjectId],
-      ref: "User",
-      default: [],
-    },
+    outgoingFriendRequests: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
 
-    birthday: {
-      type: Date,
-    },
+    birthday: Date,
 
     gender: {
       type: String,
@@ -69,6 +75,12 @@ const userSchema = new mongoose.Schema(
     versionKey: false,
   }
 );
+
+userSchema.pre("save", async function () {
+  if (!this.username) {
+    this.username = "User-" + generateUsername();
+  }
+});
 
 const User = mongoose.model("User", userSchema);
 

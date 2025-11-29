@@ -41,7 +41,6 @@ class AuthController {
         email,
         password: hashedPassword,
       });
-      user.username = user._id.toString();
       await user.save();
 
       const token = generateToken(user._id);
