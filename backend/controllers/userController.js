@@ -1,4 +1,5 @@
 import User from "../models/User.js";
+import cloudinary from "../config/cloudinary.js";
 
 class UserController {
   static async getMe(req, res) {
@@ -12,7 +13,13 @@ class UserController {
     try {
       const updates = req.body || {};
 
-      const forbidden = ["_id", "email", "username", "password"];
+      const forbidden = [
+        "_id",
+        "email",
+        "username",
+        "password",
+        "profilePicture",
+      ];
 
       for (const key of Object.keys(updates)) {
         if (forbidden.includes(key)) {
@@ -74,6 +81,41 @@ class UserController {
     } catch (err) {
       console.error(err);
       return res.status(500).json({ message: "Server error" });
+    }
+  }
+
+  static async updateProfilePicture(req, res) {
+    if (!req.file) {
+      return res.status(400).json({ message: "No file uploaded" });
+    }
+
+    try {
+      const userId = req.user._id;
+
+      const user = await User.findById(userId);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      const newImageUrl = req.file.path;
+      const newPublicId = req.file.filename;
+
+      if (user.profilePicturePublicId) {
+        await cloudinary.uploader.destroy(user.profilePicturePublicId);
+      }
+
+      user.profilePicture = newImageUrl;
+      user.profilePicturePublicId = newPublicId;
+
+      await user.save();
+
+      res.json({
+        message: "Profile picture updated successfully.",
+        url: newImageUrl,
+      });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: "Failed to update profile picture" });
     }
   }
 }

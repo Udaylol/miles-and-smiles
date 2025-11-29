@@ -26,6 +26,11 @@ const userSchema = new mongoose.Schema(
       default: "/guest.png",
     },
 
+    profilePicturePublicId: {
+      type: String,
+      default: null,
+    },
+
     favourites: {
       type: [mongoose.Schema.Types.ObjectId],
       ref: "Game",
