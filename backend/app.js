@@ -26,6 +26,16 @@ app.use("/api/auth", Routes.auth);
 app.use("/api/user", Routes.user);
 app.use("/api/friends", Routes.friend);
 
+// Error Handling Middlewares
+app.use((err, req, res, next) => {
+  if (err.code === "LIMIT_UNEXPECTED_FILE") {
+    return res
+      .status(400)
+      .json({ message: "Only one file can be uploaded for profile picture." });
+  }
+  next(err);
+});
+
 app.use((err, req, res, next) => {
   console.error("GLOBAL ERROR:", err);
   res.status(500).json({ error: "Internal Server Error" });
