@@ -42,7 +42,13 @@ const userSchema = new mongoose.Schema(
       },
     ],
 
-    favourites: [],
+    favourites: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Game",
+      },
+    ],
+
     incomingFriendRequests: [
       {
         type: mongoose.Schema.Types.ObjectId,
