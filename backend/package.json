@@ -5,11 +5,11 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "seed:games": "node seed/seedGames.js",
-    "dev": "nodemon server.js",
-    "start": "node server.js",
-    "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "seed:games": "node src/seed/seedGames.js",
+    "dev": "nodemon src/server.js",
+    "start": "node src/server.js",
+    "format": "prettier --write src/",
+    "format:check": "prettier --check src/"
   },
   "keywords": [],
   "author": "",
