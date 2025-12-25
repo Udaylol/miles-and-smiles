@@ -27,7 +27,7 @@ app.get('/', (req, res) => {
 app.use('/auth', Routes.auth);
 app.use('/user', Routes.user);
 app.use('/friend', Routes.friend);
-app.use('/games', Routes.game)
+app.use('/games', Routes.game);
 
 // Error Handling Middlewares
 app.use((err, req, res, next) => {
