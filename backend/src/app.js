@@ -27,6 +27,7 @@ app.get('/', (req, res) => {
 app.use('/auth', Routes.auth);
 app.use('/user', Routes.user);
 app.use('/friend', Routes.friend);
+app.use('/games', Routes.game)
 
 // Error Handling Middlewares
 app.use((err, req, res, next) => {
@@ -47,7 +48,7 @@ app.use((err, req, res, next) => {
 
 app.use((err, req, res, next) => {
   console.error('Uncaught Error:', err);
-  return sendResponse(500, false, 'Internal Server Error');
+  return sendResponse(res, 500, false, 'Internal Server Error');
 });
 
 export default app;

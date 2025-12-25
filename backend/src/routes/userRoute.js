@@ -31,12 +31,12 @@ router.patch(
 );
 
 router.patch(
-  '/me/profile-picture',
+  '/me/pfp',
   auth,
   upload.single('pfp'),
   UserController.updateProfilePicture
 );
 
-router.delete('/me/profile-picture', auth, UserController.deleteProfilePicture);
+router.delete('/me/pfp', auth, UserController.deleteProfilePicture);
 
 export default router;

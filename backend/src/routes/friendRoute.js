@@ -5,12 +5,15 @@ import FriendController from '../controllers/friendController.js';
 const router = express.Router();
 
 router.get('/', auth, FriendController.getFriends);
+
 router.get('/requests', auth, FriendController.getFriendRequests);
 
 router.post('/request/:id', auth, FriendController.sendFriendRequest);
-router.post('/request/:id/accept', auth, FriendController.acceptFriendRequest);
+
+router.put('/request/:id', auth, FriendController.acceptFriendRequest);
 
 router.delete('/request/:id', auth, FriendController.deleteFriendRequest);
+
 router.delete('/:id', auth, FriendController.deleteFriend);
 
 export default router;
